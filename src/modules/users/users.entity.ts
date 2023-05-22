@@ -4,7 +4,13 @@ import {
   Model,
   Table,
   PrimaryKey,
+  BelongsToMany,
 } from 'sequelize-typescript';
+
+import { Project } from '@modules/projects/projects.entity';
+import { Team } from '@modules/teams/teams.entity';
+import { UserProject } from '@modules/user-projects/user-projects.entity';
+import { UserTeam } from '@modules/user-teams/user-teams.entity';
 
 @Table
 export class User extends Model {
@@ -56,4 +62,10 @@ export class User extends Model {
     allowNull: false,
   })
   password: string;
+
+  @BelongsToMany(() => Team, () => UserTeam)
+  teams: Array<Team & { userTeam: UserTeam }>;
+
+  @BelongsToMany(() => Project, () => UserProject)
+  projects: Array<Project & { userProject: UserProject }>;
 }

@@ -14,7 +14,7 @@ const config = {
   database,
   host,
   port,
-  dialect: 'postgres',
+  dialect: 'mysql',
 };
 
 module.exports = {

@@ -6,6 +6,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 //COMMON
 import { EnvConfig, SequelizeConfig } from '@common/configs';
 import { HttpExceptionFilter } from '@common/exceptions';
+import { SharedModule } from '@common/shared/shared.module';
 //MODULES
 import { ProjectsModule } from '@modules/projects/projects.module';
 import { TeamsModule } from '@modules/teams/teams.module';
@@ -18,7 +19,7 @@ import { UserTeamsModule } from '@modules/user-teams/user-teams.module';
     CacheModule.register(),
     ConfigModule.forRoot(EnvConfig),
     SequelizeModule.forRootAsync(SequelizeConfig),
-
+    SharedModule,
     //MODULES
     ProjectsModule,
     TeamsModule,

@@ -1,14 +1,20 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpException,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { AccessGuard } from '@common/guards';
+import { GuardUser } from '@common/types';
+
 import { UsersService } from './users.service';
-import { CreateUserDto, CreatedUserOutputDto } from './dto';
+import { CreateUserDto, CreatedUserOutputDto, UserOutputDto } from './dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -18,6 +24,7 @@ export class UsersController {
   @ApiResponse({
     status: 201,
     description: 'create user',
+    type: CreatedUserOutputDto,
   })
   @HttpCode(201)
   @Post('/create')
@@ -27,7 +34,25 @@ export class UsersController {
 
       return new CreatedUserOutputDto(user);
     } catch (error) {
-      throw new HttpException(error.message, error.status);
+      throw new HttpException(error.message, error?.status ?? 500);
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'get user from tokens',
+    type: UserOutputDto,
+  })
+  @HttpCode(200)
+  @UseGuards(AccessGuard)
+  @Get('/me')
+  async getUser(@Req() request: GuardUser): Promise<UserOutputDto> {
+    try {
+      const user = await this.usersService.getUserByPk(request.user.id);
+
+      return new UserOutputDto(user);
+    } catch (error) {
+      throw new HttpException(error.message, error?.status ?? 500);
     }
   }
 }

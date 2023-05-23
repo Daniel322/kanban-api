@@ -20,6 +20,10 @@ export class UsersService {
     return this.usersRepositroy.findOne(options);
   }
 
+  async getUserByPk(id: string): Promise<User> {
+    return this.usersRepositroy.findByPk(id);
+  }
+
   async createUser(
     data: CreateUserData,
     transaction: Transaction = null,
@@ -29,7 +33,7 @@ export class UsersService {
     const userWithThisEmail = await this.getUser({ where: { email } });
 
     if (userWithThisEmail) {
-      throw new ForbiddenException('user_email_already-exist');
+      throw new ForbiddenException('user_email__already-exist');
     }
 
     const hashedPassword = await this.bcryptService.hash(password);

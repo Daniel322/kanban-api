@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
   Post,
   Req,
   Res,
@@ -43,13 +42,9 @@ export class AuthController {
     @Body() body: LoginBodyDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AuthOutputDto> {
-    try {
-      const user = await this.authService.login(body, response);
+    const user = await this.authService.login(body, response);
 
-      return new AuthOutputDto(user);
-    } catch (error) {
-      throw new HttpException(error.message, error?.status ?? 500);
-    }
+    return new AuthOutputDto(user);
   }
 
   @ApiResponse({
@@ -63,19 +58,15 @@ export class AuthController {
     @Req() request: GuardUser,
     @Res({ passthrough: true }) response: Response,
   ): Promise<AuthOutputDto> {
-    try {
-      const user = await this.authService.refresh(
-        {
-          userId: request.user.id,
-          refreshToken: request.cookies['refresh-token'],
-        },
-        response,
-      );
+    const user = await this.authService.refresh(
+      {
+        userId: request.user.id,
+        refreshToken: request.cookies['refresh-token'],
+      },
+      response,
+    );
 
-      return new AuthOutputDto(user);
-    } catch (error) {
-      throw new HttpException(error.message, error?.status ?? 500);
-    }
+    return new AuthOutputDto(user);
   }
 
   @ApiResponse({
@@ -85,17 +76,13 @@ export class AuthController {
   @UseGuards(AccessGuard)
   @Get('/logout')
   logout(@Res({ passthrough: true }) response: Response): void {
-    try {
-      response.clearCookie('access-token', {
-        domain: this.domain,
-        httpOnly: true,
-      });
-      response.clearCookie('refresh-token', {
-        domain: this.domain,
-        httpOnly: true,
-      });
-    } catch (error) {
-      throw new HttpException(error.message, error?.status ?? 500);
-    }
+    response.clearCookie('access-token', {
+      domain: this.domain,
+      httpOnly: true,
+    });
+    response.clearCookie('refresh-token', {
+      domain: this.domain,
+      httpOnly: true,
+    });
   }
 }

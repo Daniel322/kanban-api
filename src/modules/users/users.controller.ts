@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
   Post,
   Req,
   UseGuards,
@@ -29,13 +28,9 @@ export class UsersController {
   @HttpCode(201)
   @Post('/create')
   async createUser(@Body() body: CreateUserDto): Promise<CreatedUserOutputDto> {
-    try {
-      const user = await this.usersService.createUser(body);
+    const user = await this.usersService.createUser(body);
 
-      return new CreatedUserOutputDto(user);
-    } catch (error) {
-      throw new HttpException(error.message, error?.status ?? 500);
-    }
+    return new CreatedUserOutputDto(user);
   }
 
   @ApiResponse({
@@ -47,12 +42,8 @@ export class UsersController {
   @UseGuards(AccessGuard)
   @Get('/me')
   async getUser(@Req() request: GuardUser): Promise<UserOutputDto> {
-    try {
-      const user = await this.usersService.getUserByPk(request.user.id);
+    const user = await this.usersService.getUserByPk(request.user.id);
 
-      return new UserOutputDto(user);
-    } catch (error) {
-      throw new HttpException(error.message, error?.status ?? 500);
-    }
+    return new UserOutputDto(user);
   }
 }

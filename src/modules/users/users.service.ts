@@ -7,6 +7,7 @@ import { BcryptService } from '@common/shared/services/bcrypt.service';
 
 import { User } from './users.entity';
 import { CreateUserData } from './users.types';
+import { Team } from '@modules/teams/teams.entity';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +22,9 @@ export class UsersService {
   }
 
   async getUserByPk(id: string): Promise<User> {
-    return this.usersRepositroy.findByPk(id);
+    return this.usersRepositroy.findByPk(id, {
+      include: [{ model: Team, as: 'teams' }],
+    });
   }
 
   async createUser(

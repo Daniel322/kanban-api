@@ -44,6 +44,6 @@ export class UsersController {
   async getUser(@Req() request: GuardUser): Promise<UserOutputDto> {
     const user = await this.usersService.getUserByPk(request.user.id);
 
-    return new UserOutputDto(user);
+    return new UserOutputDto(user.toJSON());
   }
 }

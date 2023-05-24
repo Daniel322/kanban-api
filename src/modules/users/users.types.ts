@@ -1,3 +1,5 @@
+import { Team } from '@modules/teams/teams.types';
+
 export interface User {
   id: string;
   email: string;
@@ -5,6 +7,10 @@ export interface User {
   firstName: string;
   fullName: string;
   lastName: string;
+}
+
+export interface UserWithIncludes extends User {
+  teams?: Team[];
 }
 
 export interface CreateUserData {

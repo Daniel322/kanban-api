@@ -5,6 +5,7 @@ import {
   Table,
   PrimaryKey,
   BelongsToMany,
+  HasMany,
 } from 'sequelize-typescript';
 
 import { Project } from '@modules/projects/projects.entity';
@@ -62,6 +63,9 @@ export class User extends Model {
     allowNull: false,
   })
   password: string;
+
+  @HasMany(() => UserTeam, { onDelete: 'CASCADE' })
+  userTeams: UserTeam[];
 
   @BelongsToMany(() => Team, () => UserTeam)
   teams: Array<Team & { userTeam: UserTeam }>;

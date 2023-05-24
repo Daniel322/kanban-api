@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../users.types';
+
+import { Team } from '@modules/teams/teams.types';
+import { CreatedTeamOutputDto } from '@modules/teams/dto';
+
+import { UserWithIncludes } from '../users.types';
 
 export class UserOutputDto {
   @ApiProperty()
@@ -17,11 +21,15 @@ export class UserOutputDto {
   @ApiProperty()
   public lastName: string;
 
-  constructor(user: User) {
+  @ApiProperty()
+  teams: CreatedTeamOutputDto[];
+
+  constructor(user: UserWithIncludes) {
     this.id = user.id;
     this.email = user.email;
     this.firstName = user.firstName;
     this.lastName = user.lastName;
     this.fullName = user.fullName;
+    this.teams = user.teams.map((team: Team) => new CreatedTeamOutputDto(team));
   }
 }

@@ -13,3 +13,8 @@ export enum Role {
 export interface GuardUser extends Request {
   user: RequestUser;
 }
+
+export enum InviteType {
+  Project = 'project',
+  Team = 'team',
+}

@@ -24,6 +24,7 @@ export class TeamsController {
   @ApiResponse({
     status: 200,
     description: 'get list of user teams',
+    isArray: true,
     type: MyTeamsOutputDto,
   })
   @HttpCode(200)

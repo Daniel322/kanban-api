@@ -6,6 +6,8 @@ import { UserProject } from '@modules/user-projects/user-projects.entity';
 
 import { Project } from './projects.entity';
 import { CreateProjectData } from './projects.types';
+import { User } from '@modules/users/users.entity';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class ProjectsService {
@@ -14,7 +16,27 @@ export class ProjectsService {
     private readonly projectsRepository: typeof Project,
   ) {}
 
-  createProject({
+  async getListOfUserProjects(userId: string): Promise<Project[]> {
+    return this.projectsRepository.findAll({
+      attributes: [
+        [
+          Sequelize.fn('count', Sequelize.col('userProjects.projectId')),
+          'membersCount',
+        ],
+        'id',
+        'name',
+        'createdAt',
+      ],
+      include: [
+        { model: User, as: 'creator' },
+        { model: User, as: 'members', where: { id: userId } },
+        { model: UserProject, as: 'userProjects', attributes: [] },
+      ],
+      group: ['Project.id', 'userProjects.projectId'],
+    });
+  }
+
+  async createProject({
     name,
     creatorId,
     teamId,

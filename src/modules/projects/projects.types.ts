@@ -16,4 +16,6 @@ export interface Project {
   createdAt: Date;
   userProjects?: UserProject[];
   UserProject?: UserProject;
+  members?: User[];
+  membersCount?: number;
 }

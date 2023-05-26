@@ -18,3 +18,10 @@ export enum InviteType {
   Project = 'project',
   Team = 'team',
 }
+
+export interface Member {
+  fullName: string;
+  id: string;
+  role: Role;
+  email: string;
+}

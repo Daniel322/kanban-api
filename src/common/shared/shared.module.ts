@@ -6,7 +6,6 @@ import type { RedisClientOptions } from 'redis';
 import * as redisStore from 'cache-manager-redis-store';
 
 import { BcryptService } from './services/bcrypt.service';
-import { InvetesService } from './services/invites.service';
 import { RedisService } from './services/redis.service';
 
 @Module({
@@ -23,7 +22,7 @@ import { RedisService } from './services/redis.service';
       }),
     }),
   ],
-  providers: [BcryptService, InvetesService, RedisService],
-  exports: [BcryptService, InvetesService, RedisService],
+  providers: [BcryptService, RedisService],
+  exports: [BcryptService, RedisService],
 })
 export class SharedModule {}

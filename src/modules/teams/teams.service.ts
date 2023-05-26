@@ -18,6 +18,12 @@ export class TeamsService {
     private readonly teamsRepository: typeof Team,
   ) {}
 
+  async getCurrentTeam(teamId: string): Promise<Team> {
+    return this.teamsRepository.findByPk(teamId, {
+      attributes: ['id', 'name', 'createdAt'],
+    });
+  }
+
   async getUserTeams(userId: string): Promise<Team[]> {
     return this.teamsRepository.findAll({
       attributes: [

@@ -36,6 +36,12 @@ export class ProjectsService {
     });
   }
 
+  async getCurrentProject(projectId: string): Promise<Project> {
+    return this.projectsRepository.findByPk(projectId, {
+      attributes: ['id', 'name', 'createdAt'],
+    });
+  }
+
   async createProject({
     name,
     creatorId,

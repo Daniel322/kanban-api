@@ -4,6 +4,7 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
@@ -24,6 +25,7 @@ export class Project extends Model {
       notEmpty: true,
       isUUID: 4,
     },
+    defaultValue: DataType.UUIDV4,
   })
   id: string;
 
@@ -62,6 +64,9 @@ export class Project extends Model {
 
   @BelongsTo(() => Team, 'teamId')
   team: Team;
+
+  @HasMany(() => UserProject)
+  userProjects: UserProject[];
 
   @BelongsToMany(() => User, () => UserProject)
   members: Array<User & { userProject: UserProject }>;

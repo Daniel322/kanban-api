@@ -13,4 +13,5 @@ export interface Team {
   UserTeam?: UserTeam;
   userTeams?: UserTeam[];
   users?: Array<User & { UserTeam: UserTeam }>;
+  membersCount?: number;
 }

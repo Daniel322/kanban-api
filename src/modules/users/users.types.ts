@@ -1,3 +1,4 @@
+import { Project } from '@modules/projects/projects.types';
 import { Team } from '@modules/teams/teams.types';
 
 export interface User {
@@ -11,6 +12,7 @@ export interface User {
 
 export interface UserWithIncludes extends User {
   teams?: Team[];
+  projects?: Project[];
 }
 
 export interface CreateUserData {

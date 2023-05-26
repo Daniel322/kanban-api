@@ -5,10 +5,11 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { Role } from '@common/types';
 
-import { Team } from './teams.entity';
-import { CreateTeamData } from './teams.types';
 import { UserTeam } from '@modules/user-teams/user-teams.entity';
 import { User } from '@modules/users/users.entity';
+
+import { Team } from './teams.entity';
+import { CreateTeamData } from './teams.types';
 
 @Injectable()
 export class TeamsService {
@@ -19,13 +20,28 @@ export class TeamsService {
 
   async getUserTeams(userId: string): Promise<Team[]> {
     return this.teamsRepository.findAll({
+      attributes: [
+        [
+          Sequelize.fn('count', Sequelize.col('userTeams.teamId')),
+          'membersCount',
+        ],
+        'id',
+        'name',
+        'createdAt',
+      ],
       include: [
         {
           model: User,
           as: 'users',
           where: { id: userId },
         },
+        {
+          model: UserTeam,
+          as: 'userTeams',
+          attributes: [],
+        },
       ],
+      group: ['Team.id', 'userTeams.teamId'],
     });
   }
 

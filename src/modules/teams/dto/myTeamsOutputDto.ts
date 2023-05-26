@@ -15,10 +15,14 @@ export class MyTeamsOutputDto {
   @ApiProperty()
   public role: Role;
 
+  @ApiProperty()
+  public members: number;
+
   constructor(team: Team) {
     this.id = team.id;
     this.name = team.name;
     this.createdAt = team.createdAt;
     this.role = team.users[0].UserTeam.role;
+    this.members = team.membersCount;
   }
 }

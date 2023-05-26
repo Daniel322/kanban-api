@@ -4,6 +4,8 @@ import { Team } from '@modules/teams/teams.types';
 import { CreatedTeamOutputDto } from '@modules/teams/dto';
 
 import { UserWithIncludes } from '../users.types';
+import { CreatedProjectOutputDto } from '@modules/projects/dto';
+import { Project } from '@modules/projects/projects.types';
 
 export class UserOutputDto {
   @ApiProperty()
@@ -22,7 +24,10 @@ export class UserOutputDto {
   public lastName: string;
 
   @ApiProperty()
-  teams: CreatedTeamOutputDto[];
+  public teams: CreatedTeamOutputDto[];
+
+  @ApiProperty()
+  public projects: CreatedProjectOutputDto[];
 
   constructor(user: UserWithIncludes) {
     this.id = user.id;
@@ -31,5 +36,8 @@ export class UserOutputDto {
     this.lastName = user.lastName;
     this.fullName = user.fullName;
     this.teams = user.teams.map((team: Team) => new CreatedTeamOutputDto(team));
+    this.projects = user.projects.map(
+      (project: Project) => new CreatedProjectOutputDto(project),
+    );
   }
 }

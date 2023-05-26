@@ -5,3 +5,9 @@ export interface CreateUserProjectData {
   projectId: string;
   role: Role;
 }
+
+export interface UserProject {
+  userId: string;
+  projectId: string;
+  role: Role;
+}

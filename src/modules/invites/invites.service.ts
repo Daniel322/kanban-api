@@ -3,11 +3,16 @@ import { ConfigService } from '@nestjs/config';
 
 import { getUniqueKey } from '@common/utils';
 import { RedisService } from '@common/shared/services/redis.service';
+import { InviteType, Role } from '@common/types';
 
-import { CreateInviteLinkProps, InviteObject } from './invites.types';
-import { InviteType } from '@common/types';
 import { ProjectsService } from '@modules/projects/projects.service';
 import { TeamsService } from '@modules/teams/teams.service';
+import { UserProjectsService } from '@modules/user-projects/user-projects.service';
+import { UserProject } from '@modules/user-projects/user-projects.types';
+import { UserTeamsService } from '@modules/user-teams/user-teams.service';
+import { UserTeam } from '@modules/user-teams/user-teams.types';
+
+import { InviteLinkProps, InviteObject } from './invites.types';
 
 @Injectable()
 export class InvitesService {
@@ -19,15 +24,14 @@ export class InvitesService {
     private readonly projectsService: ProjectsService,
     private readonly redisService: RedisService,
     private readonly teamsService: TeamsService,
+    private readonly userProjectsService: UserProjectsService,
+    private readonly userTeaamsService: UserTeamsService,
   ) {
     this.frontendUrl = this.configService.get('config.frontendUrl');
     this.inviteLinkTtl = 1800;
   }
 
-  async generateInviteLink({
-    id,
-    type,
-  }: CreateInviteLinkProps): Promise<string> {
+  async generateInviteLink({ id, type }: InviteLinkProps): Promise<string> {
     const token = getUniqueKey(12);
 
     await this.redisService.set(token, { id, type }, this.inviteLinkTtl);
@@ -36,7 +40,7 @@ export class InvitesService {
   }
 
   async checkInviteLink(token: string): Promise<InviteObject> {
-    const data = await this.redisService.get<CreateInviteLinkProps>(token);
+    const data = await this.redisService.get<InviteLinkProps>(token);
 
     if (!data) {
       throw new ForbiddenException('invite__time-out');
@@ -53,5 +57,33 @@ export class InvitesService {
         type,
       };
     }
+  }
+
+  async acceptInvite(
+    token: string,
+    userId: string,
+  ): Promise<UserProject | UserTeam> {
+    const data = await this.redisService.get<InviteLinkProps>(token);
+
+    if (!data) {
+      throw new ForbiddenException('invite__time-out');
+    }
+
+    const { type, id } = data;
+
+    const result =
+      type === InviteType.Project
+        ? await this.userProjectsService.createUserProject({
+            userId,
+            projectId: id,
+            role: Role.Member,
+          })
+        : await this.userTeaamsService.createUserTeam({
+            userId,
+            teamId: id,
+            role: Role.Member,
+          });
+
+    return result;
   }
 }

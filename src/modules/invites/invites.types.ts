@@ -1,6 +1,6 @@
 import { InviteType } from '@common/types';
 
-export interface CreateInviteLinkProps {
+export interface InviteLinkProps {
   id: string;
   type: InviteType;
 }

@@ -25,13 +25,26 @@ export class InvitesService {
     private readonly redisService: RedisService,
     private readonly teamsService: TeamsService,
     private readonly userProjectsService: UserProjectsService,
-    private readonly userTeaamsService: UserTeamsService,
+    private readonly userTeamsService: UserTeamsService,
   ) {
     this.frontendUrl = this.configService.get('config.frontendUrl');
     this.inviteLinkTtl = 1800;
   }
 
-  async generateInviteLink({ id, type }: InviteLinkProps): Promise<string> {
+  async generateInviteLink({
+    id,
+    type,
+    userId,
+  }: InviteLinkProps): Promise<string> {
+    const { role } =
+      type === InviteType.Project
+        ? await this.userProjectsService.getUseRole({ userId, projectId: id })
+        : await this.userTeamsService.getUseRole({ userId, teamId: id });
+
+    if (role === Role.Member) {
+      throw new ForbiddenException('user__have-not-access');
+    }
+
     const token = getUniqueKey(12);
 
     await this.redisService.set(token, { id, type }, this.inviteLinkTtl);
@@ -78,7 +91,7 @@ export class InvitesService {
             projectId: id,
             role: Role.Member,
           })
-        : await this.userTeaamsService.createUserTeam({
+        : await this.userTeamsService.createUserTeam({
             userId,
             teamId: id,
             role: Role.Member,

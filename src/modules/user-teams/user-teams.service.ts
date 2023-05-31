@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/sequelize';
 
 import { Transaction } from 'sequelize';
 
+import { CheckRoleProps } from '@common/types';
+
 import { UserTeam as IUserTeam } from './user-teams.types';
 import { UserTeam } from './user-teams.entity';
 
@@ -12,6 +14,16 @@ export class UserTeamsService {
     @InjectModel(UserTeam)
     private readonly userTeamsRepository: typeof UserTeam,
   ) {}
+
+  async getUseRole({ userId, teamId }: CheckRoleProps): Promise<UserTeam> {
+    return this.userTeamsRepository.findOne({
+      where: {
+        userId,
+        teamId,
+      },
+      attributes: ['role'],
+    });
+  }
 
   async createUserTeam(
     data: IUserTeam,

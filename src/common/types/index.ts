@@ -10,6 +10,12 @@ export enum Role {
   Member = 'member',
 }
 
+export interface CheckRoleProps {
+  userId: string;
+  teamId?: string;
+  projectId?: string;
+}
+
 export interface GuardUser extends Request {
   user: RequestUser;
 }

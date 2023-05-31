@@ -37,8 +37,12 @@ export class InvitesController {
   @Post('/create')
   async generateInviteLink(
     @Body() body: GenerateInviteLinkDto,
+    @Req() request: GuardUser,
   ): Promise<GeneratedLinkOutputDto> {
-    const link = await this.invitesService.generateInviteLink(body);
+    const link = await this.invitesService.generateInviteLink({
+      ...body,
+      userId: request.user.id,
+    });
 
     return new GeneratedLinkOutputDto(link);
   }

@@ -38,8 +38,8 @@ export class InvitesService {
   }: InviteLinkProps): Promise<string> {
     const { role } =
       type === InviteType.Project
-        ? await this.userProjectsService.getUseRole({ userId, projectId: id })
-        : await this.userTeamsService.getUseRole({ userId, teamId: id });
+        ? await this.userProjectsService.getUserRole({ userId, projectId: id })
+        : await this.userTeamsService.getUserRole({ userId, teamId: id });
 
     if (role === Role.Member) {
       throw new ForbiddenException('user__have-not-access');

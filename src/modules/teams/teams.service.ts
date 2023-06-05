@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 
 import { Sequelize } from 'sequelize-typescript';
@@ -9,7 +9,7 @@ import { UserTeam } from '@modules/user-teams/user-teams.entity';
 import { User } from '@modules/users/users.entity';
 
 import { Team } from './teams.entity';
-import { CreateTeamData } from './teams.types';
+import { CreateTeamData, UpdateTeamData } from './teams.types';
 
 @Injectable()
 export class TeamsService {
@@ -66,5 +66,18 @@ export class TeamsService {
         include: [UserTeam],
       },
     );
+  }
+
+  async updateTeamInfo({ id, ...data }: UpdateTeamData): Promise<Team> {
+    const currentTeam = await this.teamsRepository.findByPk(id);
+
+    if (currentTeam == null) {
+      throw new NotFoundException('team__not-found');
+    }
+
+    currentTeam.set(data);
+    await currentTeam.save();
+
+    return currentTeam;
   }
 }

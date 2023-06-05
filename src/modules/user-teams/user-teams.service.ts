@@ -15,7 +15,7 @@ export class UserTeamsService {
     private readonly userTeamsRepository: typeof UserTeam,
   ) {}
 
-  async getUseRole({ userId, teamId }: CheckRoleProps): Promise<UserTeam> {
+  async getUserRole({ userId, teamId }: CheckRoleProps): Promise<UserTeam> {
     return this.userTeamsRepository.findOne({
       where: {
         userId,

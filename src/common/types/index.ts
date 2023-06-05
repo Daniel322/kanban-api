@@ -18,6 +18,7 @@ export interface CheckRoleProps {
 
 export interface GuardUser extends Request {
   user: RequestUser;
+  role: unknown;
 }
 
 export enum InviteType {

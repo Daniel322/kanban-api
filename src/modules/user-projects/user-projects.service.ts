@@ -15,7 +15,7 @@ export class UserProjectsService {
     private readonly userProjectRepository: typeof UserProject,
   ) {}
 
-  async getUseRole({
+  async getUserRole({
     userId,
     projectId,
   }: CheckRoleProps): Promise<UserProject> {

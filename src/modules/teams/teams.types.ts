@@ -15,3 +15,7 @@ export interface Team {
   users?: Array<User & { UserTeam: UserTeam }>;
   membersCount?: number;
 }
+
+export interface UpdateTeamData extends Omit<CreateTeamData, 'userId'> {
+  id: string;
+}

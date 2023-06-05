@@ -65,7 +65,7 @@ export class TeamsController {
   })
   @HttpCode(200)
   @UseGuards(AccessGuard, TeamRoleGuard)
-  @Patch('/')
+  @Patch('/:id')
   async updateTeamInfo(@Req() request: GuardUser) {
     console.log(request.role);
 

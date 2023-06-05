@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { getUniqueKey } from '@common/utils';
 import { RedisService } from '@common/shared/services/redis.service';
-import { InviteType, Role } from '@common/types';
+import { RoleType as InviteType, Role } from '@common/types';
 
 import { ProjectsService } from '@modules/projects/projects.service';
 import { TeamsService } from '@modules/teams/teams.service';

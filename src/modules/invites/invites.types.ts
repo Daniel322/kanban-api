@@ -1,4 +1,4 @@
-import { InviteType } from '@common/types';
+import { RoleType as InviteType } from '@common/types';
 
 export interface InviteLinkProps {
   id: string;

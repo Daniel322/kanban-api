@@ -11,8 +11,8 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { UserRole, Roles, User } from '@common/decorators';
-import { AccessGuard, TeamRoleGuard } from '@common/guards';
-import { GuardUser, Role, RequestUser } from '@common/types';
+import { AccessGuard, RoleGuard } from '@common/guards';
+import { GuardUser, Role, RequestUser, RoleType } from '@common/types';
 
 import { TeamsService } from './teams.service';
 import { CreateTeamDto, CreatedTeamOutputDto } from './dto';
@@ -64,9 +64,8 @@ export class TeamsController {
     status: 200,
     description: 'update team info',
   })
-  @HttpCode(200)
-  @Roles(Role.Owner)
-  @UseGuards(AccessGuard, TeamRoleGuard)
+  @Roles(RoleType.Team, Role.Owner)
+  @UseGuards(AccessGuard, RoleGuard)
   @Patch('/:id')
   async updateTeamInfo(
     @Req() request: GuardUser,

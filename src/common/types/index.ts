@@ -21,7 +21,7 @@ export interface GuardUser extends Request {
   role: unknown;
 }
 
-export enum InviteType {
+export enum RoleType {
   Project = 'project',
   Team = 'team',
 }

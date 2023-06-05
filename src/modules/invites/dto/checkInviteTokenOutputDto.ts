@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { InviteType } from '@common/types';
+import { RoleType as InviteType } from '@common/types';
 
 import { InviteObject } from '../invites.types';
 

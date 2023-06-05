@@ -10,8 +10,9 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { UserRole, Roles, User } from '@common/decorators';
 import { AccessGuard, TeamRoleGuard } from '@common/guards';
-import { GuardUser } from '@common/types';
+import { GuardUser, Role, RequestUser } from '@common/types';
 
 import { TeamsService } from './teams.service';
 import { CreateTeamDto, CreatedTeamOutputDto } from './dto';
@@ -64,10 +65,15 @@ export class TeamsController {
     description: 'update team info',
   })
   @HttpCode(200)
+  @Roles(Role.Owner)
   @UseGuards(AccessGuard, TeamRoleGuard)
   @Patch('/:id')
-  async updateTeamInfo(@Req() request: GuardUser) {
-    console.log(request.role);
+  async updateTeamInfo(
+    @Req() request: GuardUser,
+    @User() user: RequestUser,
+    @UserRole() role: Role,
+  ) {
+    console.log(request.role, user, role);
 
     return true;
   }

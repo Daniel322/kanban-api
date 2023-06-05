@@ -1,14 +1,24 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 
 import { UserProjectsService } from '@modules/user-projects/user-projects.service';
 import { UserTeamsService } from '@modules/user-teams/user-teams.service';
 
 @Injectable()
 export class TeamRoleGuard implements CanActivate {
-  constructor(private readonly userTeamsService: UserTeamsService) {}
+  constructor(
+    private reflector: Reflector,
+    private readonly userTeamsService: UserTeamsService,
+  ) {}
 
   async canActivate(ctx: ExecutionContext) {
     const req = ctx.switchToHttp().getRequest();
+    const roles = this.reflector.get<string[]>('roles', ctx.getHandler());
     const { user, params } = req;
 
     const currentRole = await this.userTeamsService.getUserRole({
@@ -17,6 +27,11 @@ export class TeamRoleGuard implements CanActivate {
     });
 
     req.role = currentRole.toJSON();
+    const { role } = req.role;
+
+    if (!roles.includes(role)) {
+      throw new ForbiddenException('user__have-not-access');
+    }
 
     return true;
   }
@@ -24,10 +39,14 @@ export class TeamRoleGuard implements CanActivate {
 
 @Injectable()
 export class ProjectRoleGuard implements CanActivate {
-  constructor(private readonly userProjectsService: UserProjectsService) {}
+  constructor(
+    private reflector: Reflector,
+    private readonly userProjectsService: UserProjectsService,
+  ) {}
 
   async canActivate(ctx: ExecutionContext) {
     const req = ctx.switchToHttp().getRequest();
+    const roles = this.reflector.get<string[]>('roles', ctx.getHandler());
     const { user, params } = req;
 
     const currentRole = await this.userProjectsService.getUserRole({
@@ -36,6 +55,11 @@ export class ProjectRoleGuard implements CanActivate {
     });
 
     req.role = currentRole.toJSON();
+    const { role } = req.role;
+
+    if (!roles.includes(role)) {
+      throw new ForbiddenException('user__have-not-access');
+    }
 
     return true;
   }

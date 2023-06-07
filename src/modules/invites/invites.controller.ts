@@ -5,7 +5,6 @@ import {
   HttpCode,
   Param,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -20,7 +19,8 @@ import {
   GenerateInviteLinkDto,
   GeneratedLinkOutputDto,
 } from './dto';
-import { GuardUser } from '@common/types';
+import { RequestUser } from '@common/types';
+import { User } from '@common/decorators';
 
 @ApiTags('invites')
 @Controller('invites')
@@ -37,11 +37,11 @@ export class InvitesController {
   @Post('/create')
   async generateInviteLink(
     @Body() body: GenerateInviteLinkDto,
-    @Req() request: GuardUser,
+    @User() { id }: RequestUser,
   ): Promise<GeneratedLinkOutputDto> {
     const link = await this.invitesService.generateInviteLink({
       ...body,
-      userId: request.user.id,
+      userId: id,
     });
 
     return new GeneratedLinkOutputDto(link);
@@ -73,12 +73,9 @@ export class InvitesController {
   @Post('/accept')
   async acceptInvite(
     @Body() { token }: AcceptInviteDto,
-    @Req() request: GuardUser,
+    @User() { id }: RequestUser,
   ): Promise<AcceptInviteOutputDto> {
-    const result = await this.invitesService.acceptInvite(
-      token,
-      request.user.id,
-    );
+    const result = await this.invitesService.acceptInvite(token, id);
 
     return new AcceptInviteOutputDto(result);
   }

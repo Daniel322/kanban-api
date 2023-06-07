@@ -3,20 +3,24 @@ import {
   Controller,
   Get,
   HttpCode,
+  Param,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { UserRole, Roles, User } from '@common/decorators';
+import { Roles, User } from '@common/decorators';
 import { AccessGuard, RoleGuard } from '@common/guards';
-import { GuardUser, Role, RequestUser, RoleType } from '@common/types';
+import { Role, RequestUser, RoleType } from '@common/types';
 
 import { TeamsService } from './teams.service';
-import { CreateTeamDto, CreatedTeamOutputDto } from './dto';
-import { MyTeamsOutputDto } from './dto/myTeamsOutputDto';
+import {
+  CreateTeamDto,
+  CreatedTeamOutputDto,
+  MyTeamsOutputDto,
+  UpdateTeamDto,
+} from './dto';
 
 @ApiTags('teams')
 @Controller('teams')
@@ -33,9 +37,9 @@ export class TeamsController {
   @UseGuards(AccessGuard)
   @Get('/my-teams')
   async getListOfUserTeams(
-    @Req() request: GuardUser,
+    @User() { id }: RequestUser,
   ): Promise<MyTeamsOutputDto[]> {
-    const teams = await this.teamsService.getUserTeams(request.user.id);
+    const teams = await this.teamsService.getUserTeams(id);
 
     return teams.map((team) => new MyTeamsOutputDto(team.toJSON()));
   }
@@ -50,11 +54,11 @@ export class TeamsController {
   @Post('/create')
   async createTeam(
     @Body() body: CreateTeamDto,
-    @Req() request: GuardUser,
+    @User() { id }: RequestUser,
   ): Promise<CreatedTeamOutputDto> {
     const team = await this.teamsService.createTeam({
       name: body.name,
-      userId: request.user.id,
+      userId: id,
     });
 
     return new CreatedTeamOutputDto(team.toJSON());
@@ -67,13 +71,10 @@ export class TeamsController {
   @Roles(RoleType.Team, Role.Owner)
   @UseGuards(AccessGuard, RoleGuard)
   @Patch('/:id')
-  async updateTeamInfo(
-    @Req() request: GuardUser,
-    @User() user: RequestUser,
-    @UserRole() role: Role,
-  ) {
-    console.log(request.role, user, role);
-
-    return true;
+  async updateTeamInfo(@Body() body: UpdateTeamDto, @Param('id') id: string) {
+    return this.teamsService.updateTeamInfo({
+      id,
+      ...body,
+    });
   }
 }

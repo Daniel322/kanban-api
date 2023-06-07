@@ -4,13 +4,12 @@ import {
   Get,
   HttpCode,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AccessGuard } from '@common/guards';
-import { GuardUser } from '@common/types';
+import { RequestUser } from '@common/types';
 
 import { ProjectsService } from './projects.service';
 import {
@@ -18,6 +17,7 @@ import {
   CreatedProjectOutputDto,
   MyProjectsOutputDto,
 } from './dto';
+import { User } from '@common/decorators';
 
 @ApiTags('projects')
 @Controller('projects')
@@ -34,11 +34,9 @@ export class ProjectsController {
   @UseGuards(AccessGuard)
   @Get('/my-projects')
   async getListOfUserProjects(
-    @Req() request: GuardUser,
+    @User() { id }: RequestUser,
   ): Promise<MyProjectsOutputDto[]> {
-    const projects = await this.projectsService.getListOfUserProjects(
-      request.user.id,
-    );
+    const projects = await this.projectsService.getListOfUserProjects(id);
 
     return projects.map((project) => new MyProjectsOutputDto(project.toJSON()));
   }
@@ -53,10 +51,10 @@ export class ProjectsController {
   @Post('/create')
   async createProject(
     @Body() body: CreateProjectDto,
-    @Req() request: GuardUser,
+    @User() { id }: RequestUser,
   ): Promise<CreatedProjectOutputDto> {
     const project = await this.projectsService.createProject({
-      creatorId: request.user.id,
+      creatorId: id,
       teamId: body.teamId,
       name: body.name,
     });

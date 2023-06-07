@@ -4,13 +4,13 @@ import {
   Get,
   HttpCode,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { User } from '@common/decorators';
 import { AccessGuard } from '@common/guards';
-import { GuardUser } from '@common/types';
+import { RequestUser } from '@common/types';
 
 import { UsersService } from './users.service';
 import { CreateUserDto, CreatedUserOutputDto, UserOutputDto } from './dto';
@@ -41,8 +41,8 @@ export class UsersController {
   @HttpCode(200)
   @UseGuards(AccessGuard)
   @Get('/me')
-  async getUser(@Req() request: GuardUser): Promise<UserOutputDto> {
-    const user = await this.usersService.getUserByPk(request.user.id);
+  async getUser(@User() { id }: RequestUser): Promise<UserOutputDto> {
+    const user = await this.usersService.getUserByPk(id);
 
     return new UserOutputDto(user.toJSON());
   }

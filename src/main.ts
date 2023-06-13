@@ -13,7 +13,7 @@ import { AppModule } from '@modules/app.module';
 
 async function bootstrap() {
   const globalPrefix = 'api';
-  const port = process.env.PORT || 3200;
+  const port = process.env.PORT || 3300;
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     new ExpressAdapter(),

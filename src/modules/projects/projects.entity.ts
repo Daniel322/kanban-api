@@ -10,6 +10,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 
+import { Column as ColumnTable } from '@modules/columns/columns.entity';
 import { Team } from '@modules/teams/teams.entity';
 import { User } from '@modules/users/users.entity';
 import { UserProject } from '@modules/user-projects/user-projects.entity';
@@ -70,4 +71,7 @@ export class Project extends Model {
 
   @BelongsToMany(() => User, () => UserProject)
   members: Array<User & { userProject: UserProject }>;
+
+  @HasMany(() => ColumnTable)
+  columns: ColumnTable[];
 }

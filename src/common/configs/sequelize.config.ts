@@ -1,6 +1,7 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModuleAsyncOptions } from '@nestjs/sequelize';
 
+import { Column } from '@modules/columns/columns.entity';
 import { Project } from '@modules/projects/projects.entity';
 import { Team } from '@modules/teams/teams.entity';
 import { User } from '@modules/users/users.entity';
@@ -17,6 +18,6 @@ export const SequelizeConfig: SequelizeModuleAsyncOptions = {
     username: configService.get('config.dbUsername'),
     database: configService.get('config.dbName'),
     password: configService.get('config.dbPassword'),
-    models: [Project, Team, User, UserProject, UserTeam],
+    models: [Column, Project, Team, User, UserProject, UserTeam],
   }),
 };

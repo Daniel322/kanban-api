@@ -33,6 +33,16 @@ export class Column extends Model {
   })
   name: string;
 
+  @SeqColumn({
+    type: DataType.INTEGER,
+    allowNull: false,
+    validate: {
+      isInt: true,
+      notEmpty: true,
+    },
+  })
+  index: number;
+
   @ForeignKey(() => Project)
   @SeqColumn({
     type: DataType.UUID,

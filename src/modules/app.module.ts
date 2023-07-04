@@ -9,6 +9,7 @@ import { HttpExceptionFilter } from '@common/exceptions';
 import { SharedModule } from '@common/shared/shared.module';
 //MODULES
 import { AuthModule } from '@modules/auth/auth.module';
+import { ColumnsModule } from '@modules/columns/columns.module';
 import { InvitesModule } from '@modules/invites/invites.module';
 import { ProjectsModule } from '@modules/projects/projects.module';
 import { TeamsModule } from '@modules/teams/teams.module';
@@ -24,6 +25,7 @@ import { UserTeamsModule } from '@modules/user-teams/user-teams.module';
     SharedModule,
     //MODULES
     AuthModule,
+    ColumnsModule,
     InvitesModule,
     ProjectsModule,
     TeamsModule,
